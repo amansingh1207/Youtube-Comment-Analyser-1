@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Comment Sentiment Analyzer</title>
+  <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(45deg, #6a11cb, #2575fc);
+      --card-bg: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      background: #0d1117;
+      color: #eaeaea;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .gradient-custom {
+      background: var(--primary-gradient);
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 3px;
+      width: 50px;
+      background: var(--primary-gradient);
+      border-radius: 3px;
+    }
+
+    .trend-chart-container, .pie-chart-container {
+      height: 300px;
+      margin-bottom: 2rem;
+    }
+
+    .wordcloud-img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .thumbnail-img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      margin-bottom: 15px;
+    }
+
+    .chart-container {
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .comment-card {
+      border-left: 4px solid;
+      transition: transform 0.2s ease;
+    }
+
+    .comment-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .month-selector {
+      overflow-x: auto;
+      white-space: nowrap;
+      padding: 10px 0;
+    }
+
+    .month-btn {
+      margin-right: 5px;
+      margin-bottom: 5px;
+      font-size: 0.85rem;
+    }
+    
+    .positive-card {
+      border-left-color: #4caf50;
+    }
+    
+    .negative-card {
+      border-left-color: #f44336;
+    }
+
+    .loading-overlay {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .trend-chart-container, .pie-chart-container {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Header Section -->
+        <header class="text-center mb-5">
+          <div class="gradient-custom py-4 rounded-3 mb-4">
+            <h1 class="display-5 fw-bold text-white">
+              <i class="bi bi-youtube text-danger"></i> YouTube Sentiment Analyzer
+            </h1>
+            <p class="lead text-white-50">
+              Analyze comments from the last 12 months to discover audience sentiment trends
+            </p>
+          </div>
+          
+          <!-- Input Section -->
+          <div class="card shadow-lg p-4 mb-5">
+            <div class="input-group">
+              <span class="input-group-text bg-dark text-light border-0">
+                <i class="bi bi-link-45deg"></i>
+              </span>
+              <input 
+                type="text" 
+                id="url" 
+                class="form-control border-0 bg-dark text-light" 
+                placeholder="Enter YouTube Video URL" 
+                aria-label="YouTube Video URL"
+              />
+              <button onclick="analyzeSentiment()" class="btn btn-primary px-4">
+                <i class="bi bi-search me-2"></i>Analyze
+              </button>
+            </div>
+            <div id="error" class="text-danger mt-3 text-start"></div>
+          </div>
+        </header>
+
+        <!-- Results Section -->
+        <div id="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="static/script.js"></script>
+</body>
+</html>
