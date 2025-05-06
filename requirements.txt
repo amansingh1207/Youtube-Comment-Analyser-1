@@ -21,3 +21,6 @@ google-auth-oauthlib==1.2.2
 google-auth-httplib2==0.2.0
 oauthlib==3.2.2
 httplib2==0.22.0
+wordcloud==1.9.3
+gunicorn==21.2.0
+
