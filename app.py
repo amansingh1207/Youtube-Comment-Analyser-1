@@ -79,7 +79,9 @@ def fetch_comments_by_month(video_id, publish_date=None, max_comments_per_month=
                 videoId=video_id,
                 maxResults=100,  # Maximum allowed by API
                 pageToken=next_page_token,
-                textFormat="plainText"
+                order="relevance",     # ⭐ MAIN FIX
+                searchTerms="",        # ⭐ FORCES MORE COMMENTS
+                textFormat="plainText""
             ).execute()
             
             items_count = len(response.get("items", []))
