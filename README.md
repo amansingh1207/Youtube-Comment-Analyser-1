@@ -1,5 +1,7 @@
 # YouTube Comments Sentiment Analyser
 
+Live: [youtube-comment-analyser-1.onrender.com](https://youtube-comment-analyser-1.onrender.com)
+
 A web app that analyses the sentiment of YouTube comments over the last 12 months using VADER.
 
 ## Features
@@ -40,8 +42,4 @@ Open `http://localhost:5000`
 
 ## Deployment
 
-Deployed on Render. See `DOCUMENTATION.md` for full deployment steps.
-
-## Documentation
-
-For detailed workflow, VADER explanation, API quota management, problems faced, and interview Q&A — see [DOCUMENTATION.md](DOCUMENTATION.md).
+Deployed on Render using `gunicorn app:app` (see `Procfile`). Set the `YOUTUBE_API_KEY` environment variable in the platform's dashboard.
