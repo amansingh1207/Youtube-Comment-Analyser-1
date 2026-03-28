@@ -4,3 +4,4 @@ __pycache__/
 *.pyo
 wordcloud_*.png
 summary_*.csv
+DOCUMENTATION.md
