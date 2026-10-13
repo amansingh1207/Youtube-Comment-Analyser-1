@@ -1,73 +1,65 @@
 # YouTube Comments Sentiment Analyser
 
-Live: [youtube-comment-analyser-1.onrender.com](https://youtube-comment-analyser-1.onrender.com)
+Paste any YouTube video URL → see how audience sentiment changed month-by-month over the last 12 months.
 
-A web app that analyses the sentiment of YouTube comments over the last 12 months using VADER.
+**Live:** https://youtube-comment-analyser-1.onrender.com *(free-tier Render — first load can take ~a minute)*
 
-## About
+## ✨ What it does
 
-This project fetches comments from any YouTube video and performs sentiment analysis to understand how audience perception has changed over time. It uses the YouTube Data API v3 to collect up to 1,200 comments (100 per month across 12 months) and classifies each comment as Positive, Negative, or Neutral using the VADER sentiment analysis engine — a rule-based model specifically designed for social media text. Results are displayed as interactive charts, and the full dataset can be exported as a CSV.
+- Fetches up to **1,200 comments** (100 per month × 12 months, newest first) via the YouTube Data API v3
+- Classifies each comment **Positive / Negative / Neutral** with VADER (rule-based engine tuned for social-media text; thresholds `≥ +0.05` / `≤ −0.05`)
+- Interactive dashboard: monthly sentiment **trend line**, comment **volume bars**, overall + per-month **doughnut charts**
+- **Top 3 positive & negative comments** per month, keyword search, **word cloud**, full **CSV export**
 
-## Workflow
+## 🏗️ How it works
 
-1. User pastes a YouTube video URL into the web interface
-2. The backend extracts the video ID and fetches video metadata and comments in parallel
-3. Comments are collected month by month (newest first), capped at 100 per month, going back 12 months
-4. Each comment is scored using VADER — compound score ≥ 0.05 = Positive, ≤ -0.05 = Negative, else Neutral
-5. Results are sent to the frontend as JSON
-6. The frontend renders:
-   - A line chart showing monthly sentiment trends
-   - A bar chart showing comment volume per month
-   - A doughnut chart for overall and per-month sentiment breakdown
-   - Top 3 positive and top 3 negative comments per month
-   - A word cloud of all fetched comments
-7. User can search comments by keyword and download a full CSV report
+```
+URL → video ID (regex: watch / youtu.be / embed)
+    → metadata + comments fetched in parallel (ThreadPoolExecutor)
+    → month buckets (100 max each, paged newest-first)
+    → VADER compound score per comment
+    → JSON → Chart.js dashboard + wordcloud PNG + summary CSV
+```
 
-## Tech Stack
+- **Backend** — `app.py` (Flask 3.1): `POST /analyze` (main API), `GET /download/<file>` (allow-listed wordcloud/CSV only), `GET /` serves the UI. Old generated files are cleaned on every analysis.
+- **Frontend** — `index.html` + `static/script.js`: Bootstrap dark theme, Chart.js line/bar/doughnut charts, month filter buttons, keyword search.
+- **Deploy** — `Procfile` (`gunicorn app:app`), `runtime.txt` (Python 3.10).
 
-| Layer | Technology |
-|---|---|
-| Backend | Python 3.10, Flask 3.1 |
-| Sentiment Analysis | VADER (vaderSentiment 3.3.2) |
-| YouTube Data | YouTube Data API v3 (google-api-python-client) |
-| Data Export | pandas |
-| Word Cloud | wordcloud |
-| Frontend | HTML, CSS, Bootstrap 5 (dark theme) |
-| Charts | Chart.js |
-| Scripting | Vanilla JavaScript |
-| Production Server | Gunicorn |
-| Config | python-dotenv |
+## 🚀 Run it locally
 
-## Features
-
-- Fetches up to 100 comments/month × 12 months (1200 comments max)
-- Sentiment analysis — Positive, Negative, Neutral
-- Monthly sentiment trend chart
-- Comment count bar chart per month
-- Doughnut pie chart (overall + per month)
-- Top 3 positive and negative comments per month
-- Keyword search across all fetched comments
-- Word cloud of all comments
-- Download full CSV report
-
-## Setup
+Prerequisites: Python 3.10+, a [YouTube Data API v3 key](https://console.cloud.google.com/) (free quota).
 
 ```bash
+git clone https://github.com/amansingh1207/Youtube-Comment-Analyser-1.git
+cd Youtube-Comment-Analyser-1
 pip install -r requirements.txt
-```
-
-Add your YouTube API key to a `.env` file:
-```
-YOUTUBE_API_KEY=your_key_here
-```
-
-Run locally:
-```bash
+echo YOUTUBE_API_KEY=your_key_here > .env
 python app.py
+# open http://localhost:5000
 ```
 
-Open `http://localhost:5000`
+On production set `YOUTUBE_API_KEY` as an environment variable and `FLASK_ENV=production`.
 
-## Deployment
+## 📁 Structure
 
-Deployed on Render using `gunicorn app:app` (see `Procfile`). Set the `YOUTUBE_API_KEY` environment variable in the platform's dashboard.
+```
+app.py            Flask API: fetch → score → charts data → downloads
+index.html        Single-page UI shell (Bootstrap dark)
+static/script.js  Rendering: charts, filters, search, CSV link
+requirements.txt  Pinned deps (Flask, VADER, pandas, wordcloud, google-api-client)
+Procfile / runtime.txt   Render deploy config
+```
+
+## 🔭 Limitations / ideas
+
+- VADER is English-centric; sampling caps at 100/month so huge comment sections are a sample, not a census.
+- Videos with disabled comments (or invalid/private URLs) return a clean 404 — no crash.
+- Ideas: transformer-based multilingual model, channel-wide comparison, caching repeat analyses.
+
+## 🛠️ Tech stack
+
+Python 3.10 · Flask 3.1 · VADER 3.3.2 · YouTube Data API v3 · pandas · wordcloud · Chart.js · Bootstrap 5 · Gunicorn · Render
+
+## 👤 Author
+
+[Aman Singh](https://github.com/amansingh1207) — B.Tech CSE, Sitare University.
